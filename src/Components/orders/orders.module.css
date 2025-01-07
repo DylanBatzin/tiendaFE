@@ -1,0 +1,79 @@
+.ordersContainer {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.ordersTitle {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.orderCard {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.orderCard h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #444;
+}
+
+.orderCard p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.orderCard ul {
+    padding-left: 20px;
+}
+
+.orderCard ul li {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.acceptButton {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.acceptButton:hover {
+    background-color: #45a049;
+}
+
+.rejectButton {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.rejectButton:hover {
+    background-color: #d32f2f;
+}
+
+.loading, .error {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+}

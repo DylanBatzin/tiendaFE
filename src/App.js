@@ -1,10 +1,14 @@
-import './App.css';
+import React from 'react';
+import 'boxicons';
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppRoutes from './Components/routes';
 
 function App() {
   return (
-    <div className="App">
-      
-    </div>
+    
+    <Router>
+      <AppRoutes />
+    </Router>
   );
 }
 

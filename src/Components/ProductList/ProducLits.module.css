@@ -1,0 +1,119 @@
+.productContainer {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.productList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 0;
+    list-style: none;
+}
+
+.productItem {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.productItem img {
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.buttonContainer button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+}
+
+.buttonContainer button:hover {
+    background-color: #0056b3;
+}
+
+.addButton {
+    margin: 2rem 0;
+    padding: 0.75rem 1.5rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.addButton:hover {
+    background-color: #218838;
+}
+
+.addProductForm {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.addProductForm label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.addProductForm input,
+.addProductForm select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.fileInput {
+    border: 2px dashed #ddd;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.fileInput:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+}
+
+.previewImage {
+    max-width: 200px;
+    max-height: 200px;
+    margin: 1rem 0;
+    border-radius: 4px;
+}
+
+.addProductForm button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.addProductForm button:hover {
+    background-color: #218838;
+}

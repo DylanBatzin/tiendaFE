@@ -1,0 +1,95 @@
+.historyContainer {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.historyTitle {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.loadingText {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+.errorText {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #d9534f;
+}
+
+.orderList {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+}
+
+.orderItem {
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.orderItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.orderItem h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.orderDetails {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.productDetail {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #007bff;
+}
+
+.productDetail p {
+    margin: 5px 0;
+    color: #333;
+}
+
+.noOrdersText {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+.cancelButton {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
