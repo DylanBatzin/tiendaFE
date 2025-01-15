@@ -135,6 +135,32 @@ async deleteOrder(uuid) {
     }
 }
 
+async getAllOrders() {
+    try {
+        const token = localStorage.getItem('jwt');
+        if (!token) throw new Error('Token no proporcionado');
+
+        const response = await fetch(`${this.baseUrl}orders`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al obtener todas las órdenes');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error al obtener todas las órdenes:', error);
+        throw error;
+    }
+}
+
+
 }
 
 export const orderService = new OrderService();

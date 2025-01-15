@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { userService } from '../../Services/UserService';
 import Header from '../Header/Header';
+import AnimatedAlert from '../Alerts/Alert';
 import styles from './UsersOp.module.css';
 
 const roleMapping = {
@@ -12,6 +13,7 @@ const UsersOp = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [alert, setAlert] = useState({ message: '', show: false, type: 'success', actions: null });
     const [showForm, setShowForm] = useState(false);
     const [newUser, setNewUser] = useState({
         FullName: '',
@@ -38,24 +40,31 @@ const UsersOp = () => {
         fetchUsers();
     }, []);
 
+    const showAlert = (message, type = 'success', actions = null) => {
+        setAlert({ message, show: true, type, actions });
+    };
+
     const handleDeleteUser = async (uuid) => {
-        if (!uuid) {
-            alert('Error: El UUID del usuario no está disponible.');
-            return;
-        }
-
         try {
-            const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
-            if (!confirmDelete) return;
-
             await userService.deleteUser(uuid);
-            alert('Usuario eliminado con éxito');
+            showAlert('Usuario eliminado con éxito', 'success');
 
             const updatedUsers = await userService.getUsers();
             setUsers(updatedUsers);
         } catch (error) {
-            alert('Error al eliminar usuario: ' + error.message);
+            showAlert('Error al eliminar usuario: ' + error.message, 'error');
         }
+    };
+
+    const confirmDeleteUser = (uuid) => {
+        showAlert(
+            '¿Estás seguro de que deseas eliminar este usuario?',
+            'warning',
+            <div>
+                <button onClick={() => handleDeleteUser(uuid)}>Sí</button>
+                <button onClick={() => setAlert({ message: '', show: false, type: 'success', actions: null })}>No</button>
+            </div>
+        );
     };
 
     const validateAge = (birthDate) => {
@@ -63,16 +72,15 @@ const UsersOp = () => {
         const birth = new Date(birthDate);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDiff = today.getMonth() - birth.getMonth();
-        
+
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
             age--;
         }
-        
+
         return age >= 18;
     };
 
     const validatePhone = (phone) => {
-        // Remove any non-digit characters
         const digits = phone.replace(/\D/g, '');
         return digits.length <= 8;
     };
@@ -81,26 +89,25 @@ const UsersOp = () => {
         e.preventDefault();
         const { Password, ConfirmPassword, BirthDate, PhoneNumber } = newUser;
 
-        // Phone validation
         if (!validatePhone(PhoneNumber)) {
-            alert('El número de teléfono no debe tener más de 8 dígitos.');
+            showAlert('El número de teléfono no debe tener más de 8 dígitos.', 'error');
             return;
         }
 
-        // Age validation
         if (!validateAge(BirthDate)) {
-            alert('El usuario debe ser mayor de 18 años para registrarse.');
+            showAlert('El usuario debe ser mayor de 18 años para registrarse.', 'error');
             return;
         }
 
         if (Password !== ConfirmPassword) {
-            alert('Las contraseñas no coinciden');
+            showAlert('Las contraseñas no coinciden', 'error');
             return;
         }
 
         if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[.,@$!%*?&])[A-Za-z\d.,@$!%*?&]{8,}$/.test(Password)) {
-            alert(
-                'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial (.,@$!%*?&)'
+            showAlert(
+                'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial (.,@$!%*?&)',
+                'error'
             );
             return;
         }
@@ -114,11 +121,9 @@ const UsersOp = () => {
             Rol: newUser.Rol,
         };
 
-        console.log('Datos transformados a enviar:', transformedUser);
-
         try {
             await userService.createUser(transformedUser);
-            alert('Usuario agregado con éxito');
+            showAlert('Usuario agregado con éxito', 'success');
 
             setShowForm(false);
             setNewUser({
@@ -134,13 +139,12 @@ const UsersOp = () => {
             const updatedUsers = await userService.getUsers();
             setUsers(updatedUsers);
         } catch (err) {
-            alert('Error al agregar usuario: ' + err.message);
+            showAlert('Error al agregar usuario: ' + err.message, 'error');
         }
     };
 
     const handlePhoneChange = (e) => {
         const value = e.target.value;
-        // Only update if the new value would have 8 or fewer digits
         if (validatePhone(value)) {
             setNewUser({ ...newUser, PhoneNumber: value });
         }
@@ -152,6 +156,14 @@ const UsersOp = () => {
     return (
         <div>
             <Header />
+            <AnimatedAlert
+                message={alert.message}
+                show={alert.show}
+                type={alert.type}
+            >
+                {alert.actions}
+            </AnimatedAlert>
+
             <div className={styles.container}>
                 <h1 className={styles.title}>Gestión de Usuarios</h1>
                 <button
@@ -245,7 +257,9 @@ const UsersOp = () => {
                             <strong>Email:</strong> {user.Email} <br />
                             <strong>Teléfono:</strong> {user.PhoneNumber} <br />
                             <strong>Rol:</strong> {roleMapping[user.Rol] || 'Rol desconocido'} <br />
-                            <button onClick={() => handleDeleteUser(user.Uuid)}>Eliminar</button>
+                            <button onClick={() => confirmDeleteUser(user.Uuid)}>
+                                Eliminar
+                            </button>
                         </li>
                     ))}
                 </ul>

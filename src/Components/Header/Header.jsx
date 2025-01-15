@@ -28,7 +28,8 @@ const Header = () => {
                 <ul>
                     <li><a href="/products" className={styles.link}>Gestionar Productos</a></li>
                     <li><a href="/home" className={styles.link}>Pedidos</a></li>
-                    <li><a href="/Users" className={styles.link}>Clientes</a></li>
+                    <li><a href="/Users" className={styles.link}>Gestionar Usuarios</a></li>
+                    <li><a href="/account" className={styles.link}><box-icon name='user' background='white' color="#ecf0f1"></box-icon></a></li>
                 </ul>
             );
         } else if (role === 'D04011B0-6F35-4DD6-89E8-99DCEB1D1B3D') {

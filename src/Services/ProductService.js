@@ -149,5 +149,31 @@ class ProductService {
             throw error;
         }
     }
+
+    async getAvailableProducts() {
+        try {
+          const token = localStorage.getItem('jwt');
+          if (!token) throw new Error('Token no proporcionado');
+      
+          // Suponiendo que el endpoint sea /api/products/available
+          const response = await fetch(`${this.baseUrl}products/available`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+          });
+      
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error en la solicitud');
+          }
+      
+          return await response.json();
+        } catch (error) {
+          console.error('Error al obtener productos disponibles:', error);
+          throw error;
+        }
+      }
     
 }export const productService = new ProductService();

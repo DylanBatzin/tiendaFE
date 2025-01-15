@@ -44,10 +44,8 @@ const History = () => {
                 }
 
                 const { email } = jwtDecode(token);
-                console.log('Email obtenido del token:', email);
 
                 const user = await userService.getUserByEmail(email);
-                console.log('Usuario obtenido:', user);
 
                 const uuid = user.Uuid || user.uuid;
                 if (!uuid) {
@@ -55,10 +53,8 @@ const History = () => {
                 }
 
                 setUserUuid(uuid);
-                console.log('UUID asignado:', uuid);
 
                 const ordersData = await orderService.getOrdersByUser(uuid);
-                console.log('Órdenes obtenidas:', ordersData);
                 
                 const updatedOrders = await Promise.all(
                     ordersData.map(async (order) => {
@@ -109,20 +105,27 @@ const History = () => {
                         {orders.map((order) => (
                             <li key={order.OrderUuid} className={styles.orderItem}>
                                 <h3>Orden ID: {order.OrderUuid}</h3>
-                                <p><strong>Total:</strong> ${order.TotalAmount}</p>
+                                <p><strong>Total:</strong> Q{order.TotalAmount}</p>
                                 <p><strong>Estado:</strong> {statusMapping[order.StatusUuid]}</p>
                                 <div className={styles.orderDetails}>
                                     {order.OrderDetails.map((detail, index) => (
                                         <div key={index} className={styles.productDetail}>
                                             <p><strong>Producto:</strong> {detail.productName}</p>
                                             <p><strong>Cantidad:</strong> {detail.Quantity}</p>
-                                            <p><strong>Subtotal:</strong> ${detail.SubTotal}</p>
+                                            <p><strong>Subtotal:</strong> Q{detail.SubTotal}</p>
                                         </div>
                                     ))}
                                 </div>
-                                {order.StatusUuid === "6EB91343-C1DD-4FE0-AD42-FD479D5575F2" && (
-                                   <button onClick={() => handleDeleteOrder(order.OrderUuid)}>Cancelar</button>
-                                )}
+                                {
+                                    order.StatusUuid === "6EB91343-C1DD-4FE0-AD42-FD479D5575F2" && (
+                                        <button onClick={() => handleDeleteOrder(order.OrderUuid)}>Cancelar</button>
+                                    )
+                                    }
+                                    {
+                                    order.StatusUuid === "52315DBF-5E49-49F2-BE80-38CBF6B67ABB" && (
+                                        <button onClick={() => handleDeleteOrder(order.OrderUuid)}>Rechazar</button>
+                                    )
+                                    }
                             </li>
                         ))}
                     </ul>

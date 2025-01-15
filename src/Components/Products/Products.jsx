@@ -1,17 +1,21 @@
 import React from 'react';
 import { productService } from '../../Services/ProductService';
 import styles from './Products.module.css';
+import AnimatedAlert from '../Alerts/Alert';
 
 
 const Products = () => {
     const [products, setProducts] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
+    const [alertMessage, setAlertMessage] = React.useState('');
+    const [showAlert, setShowAlert] = React.useState(false);
+    const [alertType, setAlertType] = React.useState('success'); 
 
     React.useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await productService.getProducts();
+                const response = await productService.getAvailableProducts();
                 setProducts(response);
                 setError(null);
             } catch (error) {
@@ -36,7 +40,15 @@ const Products = () => {
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
-        alert(`${product.Name} agregado al carrito`);
+        // Mostramos la alerta animada
+        setAlertMessage(`${product.Name} agregado al carrito`);
+        setAlertType('success'); // O 'error', 'warning', dependiendo de la situación
+        setShowAlert(true);
+
+        // Ocultar la alerta después de 2 segundos
+        setTimeout(() => {
+        setShowAlert(false);
+        }, 2000);
     };
 
     if (loading) return <div>Cargando...</div>;
@@ -57,6 +69,7 @@ const Products = () => {
                     </li>
                 ))}
             </ul>
+            <AnimatedAlert message={alertMessage} show={showAlert} type={alertType} />
         </div>
     );
 };

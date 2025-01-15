@@ -2,18 +2,20 @@ import React from 'react';
 import { productService } from '../../Services/ProductService';
 import styles from './ProducLits.module.css';
 import Header from '../Header/Header';
+import AnimatedAlert from '../Alerts/Alert';
 
 const Products = () => {
     const [products, setProducts] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
+    const [alert, setAlert] = React.useState({ message: '', show: false, type: 'success', actions: null });
     const [showForm, setShowForm] = React.useState(false);
     const [imagePreview, setImagePreview] = React.useState(null);
     const [newProduct, setNewProduct] = React.useState({
         Code: '',
         Name: '',
         Brand: '',
-        price: '',
+        Price: '',
         Stock: '',
         Image: '',
         Status: '',
@@ -35,6 +37,13 @@ const Products = () => {
         { name: 'Inactivo', value: '32A4E9A3-2255-4EF7-8440-A837E671641E' }
     ];
 
+    const showAlert = (message, type = 'success', actions = null) => {
+        setAlert({ message, show: true, type, actions });
+        setTimeout(() => {
+            setAlert({ message: '', show: false, type: 'success', actions: null });
+        }, 3000);
+    };
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
@@ -49,7 +58,7 @@ const Products = () => {
             };
             reader.readAsDataURL(file);
         } else {
-            alert("Por favor selecciona un archivo JPG o PNG");
+            showAlert("Por favor selecciona un archivo JPG o PNG", 'error');
             e.target.value = "";
         }
     };
@@ -79,27 +88,26 @@ const Products = () => {
                 Price: parseFloat(newProduct.Price),
                 Stock: parseInt(newProduct.Stock, 10),
             };
-    
-            console.log('Datos que se enviarán al servidor:', JSON.stringify(productData, null, 2));
-    
+
             if (isEditing && editingProductUuid) {
                 await productService.updateProduct(editingProductUuid, productData);
-                alert('Producto actualizado exitosamente');
+                showAlert('Producto actualizado exitosamente', 'success');
+                
             } else {
                 await productService.addProduct(productData);
-                alert('Producto agregado exitosamente');
+                showAlert('Producto agregado exitosamente', 'success');
             }
-    
+
             const updatedProducts = await productService.getProducts();
             setProducts(updatedProducts);
-    
+
             setShowForm(false);
             setImagePreview(null);
             setNewProduct({
                 Code: '',
                 Name: '',
                 Brand: '',
-                price: '',
+                Price: '',
                 Stock: '',
                 Image: '',
                 Status: '',
@@ -108,12 +116,10 @@ const Products = () => {
             setIsEditing(false);
             setEditingProductUuid(null);
         } catch (error) {
-            console.error(isEditing ? 'Error al actualizar producto:' : 'Error al agregar producto:', error);
-            alert(isEditing ? 'Error al actualizar el producto' : 'Error al agregar el producto');
+            showAlert(isEditing ? 'Error al actualizar el producto' : 'Error al agregar el producto', 'error');
         }
     };
-    
-    
+
     const handleEdit = async (product) => {
         try {
             const productData = await productService.getProductByUuid(product.Uuid);
@@ -133,18 +139,29 @@ const Products = () => {
             setShowForm(true);
         } catch (error) {
             console.error('Error al cargar producto para editar:', error);
-            alert('Error al cargar el producto para editar');
+            showAlert('Error al cargar el producto para editar', 'error');
         }
+    };
+
+    const confirmDeleteProduct = (uuid) => {
+        showAlert(
+            '¿Estás seguro de que deseas eliminar este producto?',
+            'warning',
+            <div>
+                <button onClick={() => handleDelete(uuid)}>Sí</button>
+                <button onClick={() => setAlert({ message: '', show: false, type: 'success', actions: null })}>No</button>
+            </div>
+        );
     };
 
     const handleDelete = async (uuid) => {
         try {
             await productService.deleteProduct(uuid);
             setProducts(products.filter(p => p.Uuid !== uuid));
-            alert('Producto eliminado exitosamente');
+            showAlert('Producto eliminado exitosamente', 'success');
         } catch (error) {
             console.error('Error al eliminar producto:', error);
-            alert('Error al eliminar producto');
+            showAlert('Error al eliminar producto', 'error');
         }
     };
 
@@ -179,6 +196,14 @@ const Products = () => {
     return (
         <div>
             <Header />
+            <AnimatedAlert
+                message={alert.message}
+                show={alert.show}
+                type={alert.type}
+            >
+                {alert.actions}
+            </AnimatedAlert>
+
             <div className={styles.productContainer}>
                 <h1>Listado de Productos</h1>
                 <ul className={styles.productList}>
@@ -191,7 +216,8 @@ const Products = () => {
                             <p>Stock: {product.Stock}</p>
                             <div className={styles.buttonContainer}>
                                 <button onClick={() => handleEdit(product)}>Editar</button>
-                                <button onClick={() => handleDelete(product.Uuid)}>Eliminar</button>                            </div>
+                                <button onClick={() => confirmDeleteProduct(product.Uuid)}>Eliminar</button>
+                            </div>
                         </li>
                     ))}
                 </ul>

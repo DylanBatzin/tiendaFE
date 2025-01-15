@@ -3,6 +3,7 @@ import {jwtDecode} from 'jwt-decode';
 import { userService } from '../../Services/UserService'; 
 import Header from '../Header/Header';
 import styles from './User.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
     const [user, setUser] = useState(null);
@@ -10,6 +11,7 @@ const UserProfile = () => {
     const [errors, setErrors] = useState({});
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const navigate = useNavigate();
 
     const validateName = (name) => /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$/.test(name);
     const validatePassword = (password) => 
@@ -101,8 +103,6 @@ const UserProfile = () => {
                 Rol: user.Rol
             };
     
-            console.log('Uuid del usuario:', user.Uuid); 
-            console.log('Datos a enviar:', updatedUser);
     
             userService.updateUser(user.Uuid, updatedUser)
                 .then(() => {
@@ -117,6 +117,11 @@ const UserProfile = () => {
                     }));
                 });
         }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('jwt');
+        navigate('/');
     };
 
     if (!user) {
@@ -214,10 +219,15 @@ const UserProfile = () => {
                         Editar Perfil
                     </button>
                 )}
+                <button 
+                    className={styles.logoutButton} 
+                    onClick={handleLogout}
+                >
+                    Cerrar Sesión
+                </button>
             </div>
         </div>
     );
 };
 
 export default UserProfile;
-

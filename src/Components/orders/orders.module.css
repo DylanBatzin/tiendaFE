@@ -40,10 +40,11 @@
     color: #555;
 }
 
-.buttons {
+.buttonsContainer {
     margin-top: 15px;
     display: flex;
-    gap: 10px;
+    gap: 15px; /* Espacio entre botones */
+    flex-wrap: wrap;
 }
 
 .acceptButton {
@@ -70,6 +71,58 @@
 
 .rejectButton:hover {
     background-color: #d32f2f;
+}
+
+.sendButton {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sendButton:hover {
+    background-color: #1976d2;
+}
+
+.delayedButton {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delayedButton:hover {
+    background-color: #fb8c00;
+}
+
+.deliveredButton {
+    background-color: #9c27b0;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.deliveredButton:hover {
+    background-color: #7b1fa2;
+}
+
+.deleteButton {
+    background-color: #e91e63;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    background-color: #c2185b;
 }
 
 .loading, .error {
