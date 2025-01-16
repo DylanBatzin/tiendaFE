@@ -3,7 +3,7 @@ import { userService } from '../../Services/UserService';
 import { orderService } from '../../Services/OrdersService';
 import styles from './Cart.module.css';
 import Header from '../Header/Header';
-
+import AnimatedAlert from '../Alerts/Alert';
 
 const Cart = () => {
     const [cart, setCart] = useState([]);
@@ -11,6 +11,7 @@ const Cart = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [orderProcessing, setOrderProcessing] = useState(false);
+    const [alert, setAlert] = useState({ message: '', show: false, type: 'success', actions: null });
 
     useEffect(() => {
         const initializeCart = async () => {
@@ -36,10 +37,18 @@ const Cart = () => {
         initializeCart();
     }, []);
 
+    const showAlert = (message, type = 'success', actions = null) => {
+        setAlert({ message, show: true, type, actions });
+        setTimeout(() => {
+            setAlert({ message: '', show: false, type: 'success', actions: null });
+        }, 3000);
+    };
+
     const removeFromCart = (Uuid) => {
         const updatedCart = cart.filter(item => item.Uuid !== Uuid);
         setCart(updatedCart);
         localStorage.setItem('cart', JSON.stringify(updatedCart));
+        showAlert('Producto eliminado del carrito', 'success');
     };
 
     const updateQuantity = (Uuid, newQuantity) => {
@@ -49,6 +58,7 @@ const Cart = () => {
         );
         setCart(updatedCart);
         localStorage.setItem('cart', JSON.stringify(updatedCart));
+        showAlert('Cantidad actualizada', 'success');
     };
 
     const getTotal = () => {
@@ -75,11 +85,11 @@ const Cart = () => {
             
             localStorage.removeItem('cart');
             setCart([]);
-            alert('¡Pedido creado exitosamente!');
+            showAlert('¡Pedido creado exitosamente!', 'success');
 
         } catch (error) {
             console.error('Error al crear el pedido:', error);
-            alert('Error al crear el pedido. Por favor, intente nuevamente.');
+            showAlert('Error al crear el pedido. Por favor, intente nuevamente.', 'error');
         } finally {
             setOrderProcessing(false);
         }
@@ -121,6 +131,13 @@ const Cart = () => {
     return (
         <div>
             <Header />
+            <AnimatedAlert
+                message={alert.message}
+                show={alert.show}
+                type={alert.type}
+            >
+                {alert.actions}
+            </AnimatedAlert>
             <div className={styles['cart-container']}>
                 {userData && (
                     <div className={styles['user-info']}>

@@ -4,6 +4,7 @@ import { userService } from '../../Services/UserService';
 import { productService } from '../../Services/ProductService';
 import { jwtDecode } from 'jwt-decode';
 import Header from '../Header/Header';
+import AnimatedAlert from '../Alerts/Alert';
 import styles from './History.module.css'; 
 
 const History = () => {
@@ -11,6 +12,7 @@ const History = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userUuid, setUserUuid] = useState(null);
+    const [alert, setAlert] = useState({ message: '', show: false, type: 'success', actions: null });
 
     const statusMapping = {
         "6EB91343-C1DD-4FE0-AD42-FD479D5575F2": "Procesando",
@@ -23,13 +25,31 @@ const History = () => {
         "F190BE66-3B22-4E7D-85FC-C9C79E908642": "Activo",
     };
 
+    const showAlert = (message, type = 'success', actions = null) => {
+        setAlert({ message, show: true, type, actions });
+        setTimeout(() => {
+            setAlert({ message: '', show: false, type: 'success', actions: null });
+        }, 3000);
+    };
+
+    const confirmDeleteOrder = (orderUuid) => {
+        showAlert(
+            '¿Estás seguro de que deseas eliminar esta orden?',
+            'warning',
+            <div>
+                <button onClick={() => handleDeleteOrder(orderUuid)}>Sí</button>
+                <button onClick={() => setAlert({ message: '', show: false, type: 'success', actions: null })}>No</button>
+            </div>
+        );
+    };
+
     const handleDeleteOrder = async (orderUuid) => {
         try {
             const result = await orderService.deleteOrder(orderUuid);
-            alert(result.message);
+            showAlert(result.message, 'success');
             setOrders(orders.filter(order => order.OrderUuid !== orderUuid));
         } catch (error) {
-            alert('Error al eliminar la orden: ' + error.message);
+            showAlert('Error al eliminar la orden: ' + error.message, 'error');
         }
     };
 
@@ -96,6 +116,13 @@ const History = () => {
     return (
         <div>
             <Header />
+            <AnimatedAlert
+                message={alert.message}
+                show={alert.show}
+                type={alert.type}
+            >
+                {alert.actions}
+            </AnimatedAlert>
             <div className={styles.historyContainer}>
                 <h1 className={styles.historyTitle}>Historial de Órdenes</h1>
                 {orders.length === 0 ? (
@@ -118,14 +145,14 @@ const History = () => {
                                 </div>
                                 {
                                     order.StatusUuid === "6EB91343-C1DD-4FE0-AD42-FD479D5575F2" && (
-                                        <button onClick={() => handleDeleteOrder(order.OrderUuid)}>Cancelar</button>
+                                        <button onClick={() => confirmDeleteOrder(order.OrderUuid)}>Cancelar</button>
                                     )
-                                    }
-                                    {
+                                }
+                                {
                                     order.StatusUuid === "52315DBF-5E49-49F2-BE80-38CBF6B67ABB" && (
-                                        <button onClick={() => handleDeleteOrder(order.OrderUuid)}>Rechazar</button>
+                                        <button onClick={() => confirmDeleteOrder(order.OrderUuid)}>Rechazar</button>
                                     )
-                                    }
+                                }
                             </li>
                         ))}
                     </ul>

@@ -40,12 +40,11 @@ const Products = () => {
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
-        // Mostramos la alerta animada
         setAlertMessage(`${product.Name} agregado al carrito`);
-        setAlertType('success'); // O 'error', 'warning', dependiendo de la situación
+        setAlertType('success'); 
         setShowAlert(true);
 
-        // Ocultar la alerta después de 2 segundos
+        
         setTimeout(() => {
         setShowAlert(false);
         }, 2000);
